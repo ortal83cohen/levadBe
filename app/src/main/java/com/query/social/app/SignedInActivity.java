@@ -84,7 +84,7 @@ public class SignedInActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            startActivity(AuthUiActivity.createIntent(this));
+            startActivity(MainActivity.Companion.createIntent(this));
             finish();
             return;
         }
@@ -106,7 +106,7 @@ public class SignedInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
+                            startActivity(MainActivity.Companion.createIntent(SignedInActivity.this));
                             finish();
                         } else {
                             showSnackbar(R.string.sign_out_failed);
@@ -139,7 +139,7 @@ public class SignedInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
+                            startActivity(MainActivity.Companion.createIntent(SignedInActivity.this));
                             finish();
                         } else {
                             showSnackbar(R.string.delete_account_failed);
