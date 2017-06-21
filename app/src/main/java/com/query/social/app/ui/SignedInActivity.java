@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.query.social.app;
+package com.query.social.app.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,13 +25,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.query.social.app.R;
 import com.query.social.app.auth.AuthUI;
 import com.query.social.app.auth.AuthUI.IdpConfig;
 import com.query.social.app.auth.IdpResponse;
@@ -51,7 +51,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignedInActivity extends AppCompatActivity {
+public class SignedInActivity extends BaseActivity {
 
     private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
 

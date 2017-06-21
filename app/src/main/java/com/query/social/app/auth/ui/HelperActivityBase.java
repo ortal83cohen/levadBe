@@ -3,11 +3,12 @@ package com.query.social.app.auth.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
-import android.support.v7.app.AppCompatActivity;
+
+import com.query.social.app.ui.BaseActivity;
 
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class HelperActivityBase extends AppCompatActivity {
+public class HelperActivityBase extends BaseActivity {
 
     protected ActivityHelper mActivityHelper;
 
