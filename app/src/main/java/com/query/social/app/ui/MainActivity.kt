@@ -26,7 +26,7 @@ import java.util.*
 
 class MainActivity : BaseActivity() , QuestionFragment.OnListFragmentInteractionListener {
     override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     private val RC_SIGN_IN = 100
@@ -45,7 +45,38 @@ class MainActivity : BaseActivity() , QuestionFragment.OnListFragmentInteraction
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         userViewModel = ViewModelProviders.of(this).get(UserViewModel::class.java!!)
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        openQuestionListFragment()
+        navigation.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    openQuestionListFragment()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.navigation_dashboard -> {
+//                kotlinx.android.synthetic.main.activity_main.message.setText(R.string.title_dashboard)
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.navigation_user -> {
+                    if (userViewModel!!.user.value == null) {
+                        startActivityForResult(
+                                AuthUI.getInstance().createSignInIntentBuilder()
+                                        .setTheme(getSelectedTheme())
+                                        .setLogo(getSelectedLogo())
+                                        .setAvailableProviders(getSelectedProviders())
+                                        .setTosUrl(getSelectedTosUrl())
+                                        .setPrivacyPolicyUrl("https://firebase.google.com/terms/analytics/#7_privacy")
+                                        .setIsSmartLockEnabled(true, true)
+                                        .setAllowNewEmailAccounts(true)
+                                        .build(),
+                                RC_SIGN_IN)
+                    } else {
+                        startSignedInActivity(null)
+                    }
+                    return@OnNavigationItemSelectedListener true
+                }
+            }
+            false
+        })
         userViewModel!!.user.observe(this, android.arch.lifecycle.Observer<FirebaseUser> { firebaseUser ->
             val checkBox = findViewById(R.id.navigation_user) as BottomNavigationItemView
 //            checkBox.setTitle(firebaseUser!!.displayName)
@@ -69,37 +100,6 @@ class MainActivity : BaseActivity() , QuestionFragment.OnListFragmentInteraction
 
     }
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_home -> {
-                openQuestionListFragment()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_dashboard -> {
-//                kotlinx.android.synthetic.main.activity_main.message.setText(R.string.title_dashboard)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_user -> {
-                if (userViewModel!!.user.value == null) {
-                    startActivityForResult(
-                            AuthUI.getInstance().createSignInIntentBuilder()
-                                    .setTheme(getSelectedTheme())
-                                    .setLogo(getSelectedLogo())
-                                    .setAvailableProviders(getSelectedProviders())
-                                    .setTosUrl(getSelectedTosUrl())
-                                    .setPrivacyPolicyUrl("https://firebase.google.com/terms/analytics/#7_privacy")
-                                    .setIsSmartLockEnabled(true, true)
-                                    .setAllowNewEmailAccounts(true)
-                                    .build(),
-                            RC_SIGN_IN)
-                } else {
-                    startSignedInActivity(null)
-                }
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
     val QUESTION_LIST_FRAGMENT = "questionFragment"
      var questionFragment: Fragment? = null
 
@@ -109,7 +109,9 @@ class MainActivity : BaseActivity() , QuestionFragment.OnListFragmentInteraction
         if (questionFragment == null) {
             questionFragment = QuestionFragment.newInstance()
         }
-        loadFragment(questionFragment!!,true,QUESTION_LIST_FRAGMENT)
+        if(!questionFragment!!.isAdded) {
+            loadFragment(questionFragment!!, true, QUESTION_LIST_FRAGMENT)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
