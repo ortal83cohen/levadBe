@@ -25,7 +25,7 @@ import com.query.social.app.auth.AuthUI;
 import com.query.social.app.auth.ErrorCodes;
 import com.query.social.app.auth.IdpResponse;
 import com.query.social.app.auth.ResultCodes;
-import com.query.social.app.ui.dummy.DummyContent;
+import com.query.social.app.model.Question;
 import com.query.social.app.viewmodel.UserViewModel;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.List;
  * Created by Ortal Cohen on 24/6/2017.
  */
 
-public class MainActivity2 extends BaseActivity implements QuestionsListFragment.OnListItemListener
+public class MainActivity extends BaseActivity implements QuestionsListFragment.OnListItemListener
         , QuestionsListFragment.OnAddMoreItemButtonListener, AddQuestionFragment.OnFragmentInteractionListener {
 
 
@@ -67,21 +67,7 @@ public class MainActivity2 extends BaseActivity implements QuestionsListFragment
 
                         break;
                     case R.id.navigation_user:
-                        if (userViewModel.getUser().getValue() == null) {
-                            startActivityForResult(
-                                    AuthUI.getInstance().createSignInIntentBuilder()
-                                            .setTheme(getSelectedTheme())
-                                            .setLogo(getSelectedLogo())
-                                            .setAvailableProviders(getSelectedProviders())
-                                            .setTosUrl(getSelectedTosUrl())
-                                            .setPrivacyPolicyUrl("https://firebase.google.com/terms/analytics/#7_privacy")
-                                            .setIsSmartLockEnabled(true, true)
-                                            .setAllowNewEmailAccounts(true)
-                                            .build(),
-                                    RC_SIGN_IN);
-                        } else {
-                            startSignedInActivity(null);
-                        }
+                     logInActivity();
                         break;
                 }
                 return false;
@@ -96,6 +82,24 @@ public class MainActivity2 extends BaseActivity implements QuestionsListFragment
             }
         });
 
+    }
+
+    public void logInActivity() {
+        if (userViewModel.getUser().getValue() == null) {
+            startActivityForResult(
+                    AuthUI.getInstance().createSignInIntentBuilder()
+                            .setTheme(getSelectedTheme())
+                            .setLogo(getSelectedLogo())
+                            .setAvailableProviders(getSelectedProviders())
+                            .setTosUrl(getSelectedTosUrl())
+                            .setPrivacyPolicyUrl("https://firebase.google.com/terms/analytics/#7_privacy")
+                            .setIsSmartLockEnabled(true, true)
+                            .setAllowNewEmailAccounts(true)
+                            .build(),
+                    RC_SIGN_IN);
+        } else {
+            startSignedInActivity(null);
+        }
     }
 
 
@@ -190,7 +194,7 @@ public class MainActivity2 extends BaseActivity implements QuestionsListFragment
     }
 
     @Override public void onBackPressed() {
-        if (addQuestionFragment.isAdded()) {
+        if (addQuestionFragment!=null && addQuestionFragment.isAdded()) {
             (addQuestionFragment).dismiss(new AnimationUtils.Dismissible.OnDismissedListener() {
                 @Override
                 public void onDismissed() {
@@ -298,7 +302,7 @@ public class MainActivity2 extends BaseActivity implements QuestionsListFragment
         }
     }
     @Override
-    public void onListInteraction(DummyContent.DummyItem item) {
+    public void onListInteraction(Question item) {
 
     }
 

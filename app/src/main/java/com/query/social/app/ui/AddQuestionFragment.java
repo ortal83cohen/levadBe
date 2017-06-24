@@ -1,17 +1,25 @@
 package com.query.social.app.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.query.social.app.model.Question;
 import com.query.social.app.service.GoogleDatabaseService;
 import com.query.social.app.R;
+import com.query.social.app.viewmodel.UserViewModel;
+
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +43,7 @@ private OnDismissedListener onDismissedListener;
     private Button submit;
     private GoogleDatabaseService googleDatabaseService;
     private EditText questionHeader;
+    private UserViewModel userViewModel;
 
     public AddQuestionFragment() {
         // Required empty public constructor
@@ -64,7 +73,7 @@ private OnDismissedListener onDismissedListener;
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_question, container, false);
-
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         AnimationUtils.registerCircularRevealAnimation(getContext(), view, revealAnimationSetting,
                 revealAnimationSetting.getFabColor(),revealAnimationSetting.getPageColor());
         questionHeader = (EditText)view.findViewById(R.id.askQuestion);
@@ -73,8 +82,32 @@ private OnDismissedListener onDismissedListener;
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                googleDatabaseService.saveNewQuestion(questionHeader.getText());
-
+                if(userViewModel.getUser().getValue()==null){
+                    AlertDialog.Builder builder;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Dialog_Alert);
+                    } else {
+                        builder = new AlertDialog.Builder(getContext());
+                    }
+                    builder.setTitle("Unknown user")
+                            .setMessage("You can't post question without been logedin")
+                            .setPositiveButton("Log in", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ((MainActivity)getActivity()).logInActivity();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }else {
+                    googleDatabaseService.saveNewQuestion(new Question(UUID.randomUUID().toString(),
+                            questionHeader.getText().toString(),userViewModel.getUser().getValue().getUid(),
+                            userViewModel.getUser().getValue().getDisplayName()));
+                }
 //                mListener.onFragmentInteraction("");
             }
         });

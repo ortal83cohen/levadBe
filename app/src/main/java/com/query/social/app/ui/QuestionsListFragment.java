@@ -1,5 +1,8 @@
 package com.query.social.app.ui;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.query.social.app.R;
-import com.query.social.app.ui.dummy.DummyContent;
-import com.query.social.app.ui.dummy.DummyContent.DummyItem;
+import com.query.social.app.model.Question;
+import com.query.social.app.viewmodel.QuestionsViewModel;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -25,9 +30,10 @@ public class QuestionsListFragment extends Fragment {
 
     private OnListItemListener mListItemListener;
     private OnAddMoreItemButtonListener mAddMoreItemButtonListener;
-
-    RecyclerView recyclerView;
+    private QuestionItemRecyclerViewAdapter questionItemRecyclerViewAdapter;
+    private RecyclerView recyclerView;
     private FloatingActionButton floatingButton;
+    private QuestionsViewModel questionsViewModel;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -66,8 +72,18 @@ public class QuestionsListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new QuestionItemRecyclerViewAdapter(DummyContent.ITEMS, mListItemListener));
-
+        recyclerView.addItemDecoration(  new DividerItemDecoration(getActivity().getDrawable(R.drawable.list_devider),
+                false, true));
+        questionsViewModel = ViewModelProviders.of(this).get(QuestionsViewModel.class);
+        LiveData<List<Question>> questions = questionsViewModel.getQuestions();
+         questionItemRecyclerViewAdapter= new QuestionItemRecyclerViewAdapter(questions.getValue(), mListItemListener);
+        recyclerView.setAdapter(questionItemRecyclerViewAdapter);
+        questions.observe((BaseActivity) getActivity(), new Observer<List<Question>>() {
+            @Override
+            public void onChanged(@Nullable List<Question> questions) {
+                questionItemRecyclerViewAdapter.setValues(questions);
+            }
+        });
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +118,7 @@ public class QuestionsListFragment extends Fragment {
      */
     public interface OnListItemListener {
         // TODO: Update argument type and name
-        void onListInteraction(DummyItem item);
+        void onListInteraction(Question item);
     }
 
 
@@ -115,6 +131,6 @@ public class QuestionsListFragment extends Fragment {
                 (int) (floatingButton.getX() + floatingButton.getWidth() / 2),
                 (int) (floatingButton.getY() + floatingButton.getHeight() / 2),
                 getView().getWidth(),
-                getView().getHeight(),floatingButton.getBackgroundTintList().getDefaultColor(),getActivity().getColor(android.R.color.white));
+                getView().getHeight(), floatingButton.getBackgroundTintList().getDefaultColor(), getActivity().getColor(android.R.color.white));
     }
 }

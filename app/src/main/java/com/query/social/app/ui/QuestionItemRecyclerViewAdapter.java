@@ -7,21 +7,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.query.social.app.R;
-import com.query.social.app.ui.dummy.DummyContent.DummyItem;
+import com.query.social.app.model.Question;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Question} and makes a call to the
  * specified {@link QuestionsListFragment.OnListItemListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<QuestionItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private  List<Question> mValues;
     private final QuestionsListFragment.OnListItemListener mListener;
 
-    public QuestionItemRecyclerViewAdapter(List<DummyItem> items, QuestionsListFragment.OnListItemListener listener) {
+    public void setValues(List<Question> values){
+      mValues=values;
+      notifyDataSetChanged();
+    }
+    public QuestionItemRecyclerViewAdapter(List<Question> items, QuestionsListFragment.OnListItemListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -29,15 +33,15 @@ public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<Questi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_questionitem, parent, false);
+                .inflate(R.layout.fragment_question_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getmUserName());
+        holder.mContentView.setText(mValues.get(position).getmHeader());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +57,9 @@ public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<Questi
 
     @Override
     public int getItemCount() {
+        if(mValues==null){
+            return 0;
+        }
         return mValues.size();
     }
 
@@ -60,7 +67,7 @@ public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<Questi
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Question mItem;
 
         public ViewHolder(View view) {
             super(view);
