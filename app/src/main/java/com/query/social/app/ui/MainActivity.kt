@@ -3,6 +3,7 @@ package com.query.social.app.ui
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.MainThread
 import android.support.annotation.StringRes
@@ -24,8 +25,37 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
-class MainActivity : BaseActivity() , QuestionFragment.OnListFragmentInteractionListener {
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
+class MainActivity : BaseActivity(), QuestionsListFragment.OnListItemListener
+        , QuestionsListFragment.OnAddMoreItemButtonListener, AddQuestionFragment.OnFragmentInteractionListener {
+
+    val QUESTION_LIST_FRAGMENT = "questionsListFragment"
+    val ADD_QUESTION_FRAGMENT = "addQuestionFragment"
+    var questionsListFragment: QuestionsListFragment? = null
+
+    var addQuestionFragment: Fragment? = null
+
+
+    override fun onFragmentInteraction(uri: Uri?) {
+        onBackPressed()
+    }
+
+    override fun onAddItemInteraction() {
+        openAddQuestionFragment()
+    }
+
+    override fun onListInteraction(item: DummyContent.DummyItem?) {
+
+    }
+
+    override fun onBackPressed() {
+super.onBackPressed()
+if (addQuestionFragment!!.isAdded) {
+    (addQuestionFragment as AnimationUtils.Dismissible).dismiss({
+        fun onDismissed(setting: RevealAnimationSetting) {
+            supportFragmentManager.beginTransaction().remove(addQuestionFragment).commitAllowingStateLoss()
+        }
+    })
+}
 
     }
 
@@ -84,7 +114,7 @@ class MainActivity : BaseActivity() , QuestionFragment.OnListFragmentInteraction
 
     }
 
-    private fun loadFragment(fragment: Fragment, addToBackStack: Boolean, tag: String) {
+     private fun loadFragment(fragment: Fragment, addToBackStack: Boolean, tag: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
 
@@ -100,17 +130,26 @@ class MainActivity : BaseActivity() , QuestionFragment.OnListFragmentInteraction
 
     }
 
-    val QUESTION_LIST_FRAGMENT = "questionFragment"
-     var questionFragment: Fragment? = null
 
     private fun openQuestionListFragment() {
-        questionFragment = supportFragmentManager.findFragmentByTag(
-                QUESTION_LIST_FRAGMENT) as QuestionFragment?
-        if (questionFragment == null) {
-            questionFragment = QuestionFragment.newInstance()
+        questionsListFragment = supportFragmentManager.findFragmentByTag(
+                QUESTION_LIST_FRAGMENT) as QuestionsListFragment?
+        if (questionsListFragment == null) {
+            questionsListFragment = QuestionsListFragment.newInstance()
         }
-        if(!questionFragment!!.isAdded) {
-            loadFragment(questionFragment!!, true, QUESTION_LIST_FRAGMENT)
+        if (!questionsListFragment!!.isAdded) {
+            loadFragment(questionsListFragment!!, true, QUESTION_LIST_FRAGMENT)
+        }
+    }
+
+    private fun openAddQuestionFragment() {
+        addQuestionFragment = supportFragmentManager.findFragmentByTag(
+                ADD_QUESTION_FRAGMENT) as AddQuestionFragment?
+        if (addQuestionFragment == null) {
+            addQuestionFragment = AddQuestionFragment.newInstance(questionsListFragment!!.constructRevealSettings())
+        }
+        if (!addQuestionFragment!!.isAdded) {
+            loadFragment(addQuestionFragment!!, true, ADD_QUESTION_FRAGMENT)
         }
     }
 

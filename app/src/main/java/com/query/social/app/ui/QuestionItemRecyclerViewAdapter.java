@@ -7,22 +7,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.query.social.app.R;
-import com.query.social.app.ui.QuestionFragment.OnListFragmentInteractionListener;
 import com.query.social.app.ui.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link QuestionsListFragment.OnListItemListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<QuestionItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final QuestionsListFragment.OnListItemListener mListener;
 
-    public QuestionItemRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public QuestionItemRecyclerViewAdapter(List<DummyItem> items, QuestionsListFragment.OnListItemListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -46,7 +45,7 @@ public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<Questi
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListInteraction(holder.mItem);
                 }
             }
         });

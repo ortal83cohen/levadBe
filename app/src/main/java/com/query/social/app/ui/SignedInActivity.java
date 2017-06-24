@@ -106,7 +106,7 @@ public class SignedInActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            startActivity(MainActivity.Companion.createIntent(SignedInActivity.this));
+                            startActivity(MainActivity2.createIntent(SignedInActivity.this));
                             finish();
                         } else {
                             showSnackbar(R.string.sign_out_failed);

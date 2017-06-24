@@ -3,6 +3,7 @@ package com.query.social.app.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,32 +15,31 @@ import com.query.social.app.R;
 import com.query.social.app.ui.dummy.DummyContent;
 import com.query.social.app.ui.dummy.DummyContent.DummyItem;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnListItemListener}
  * interface.
  */
-public class QuestionFragment extends Fragment {
+public class QuestionsListFragment extends Fragment {
 
-    private OnListFragmentInteractionListener mListener;
+    private OnListItemListener mListItemListener;
+    private OnAddMoreItemButtonListener mAddMoreItemButtonListener;
 
     RecyclerView recyclerView;
+    private FloatingActionButton floatingButton;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public QuestionFragment() {
+    public QuestionsListFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static QuestionFragment newInstance() {
-        QuestionFragment fragment = new QuestionFragment();
+    public static QuestionsListFragment newInstance() {
+        QuestionsListFragment fragment = new QuestionsListFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
@@ -57,6 +57,7 @@ public class QuestionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_questionitem_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.list);      // Set the adapter
+        floatingButton = (FloatingActionButton) view.findViewById(R.id.floatingButton);      // Set the adapter
         return view;
     }
 
@@ -65,26 +66,28 @@ public class QuestionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(new QuestionItemRecyclerViewAdapter(DummyContent.ITEMS, mListItemListener));
 
-        recyclerView.setAdapter(new QuestionItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+        floatingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddMoreItemButtonListener.onAddItemInteraction();
+            }
+        });
 
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+        mListItemListener = (OnListItemListener) context;
+        mAddMoreItemButtonListener = (OnAddMoreItemButtonListener) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mListItemListener = null;
     }
 
     /**
@@ -97,8 +100,21 @@ public class QuestionFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface OnListItemListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListInteraction(DummyItem item);
+    }
+
+
+    public interface OnAddMoreItemButtonListener {
+        void onAddItemInteraction();
+    }
+
+    public RevealAnimationSetting constructRevealSettings() {
+        return RevealAnimationSetting.with(
+                (int) (floatingButton.getX() + floatingButton.getWidth() / 2),
+                (int) (floatingButton.getY() + floatingButton.getHeight() / 2),
+                getView().getWidth(),
+                getView().getHeight(),floatingButton.getBackgroundTintList().getDefaultColor(),getActivity().getColor(android.R.color.white));
     }
 }
