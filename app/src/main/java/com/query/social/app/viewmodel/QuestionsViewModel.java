@@ -21,6 +21,7 @@ import java.util.List;
  */
 
 public class QuestionsViewModel  extends ViewModel {
+    private final DatabaseReference myRef;
     FirebaseDatabase database;
     private final MutableLiveData<List<Question>> questions = new MutableLiveData<>();
 
@@ -32,22 +33,28 @@ public class QuestionsViewModel  extends ViewModel {
         questions.setValue(new ArrayList<Question>());
             database = FirebaseDatabase.getInstance();
 
-            DatabaseReference myRef = database.getReference("QUESTIONS");
-            myRef.addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            //Get map of users in datasnapshot
-                            GenericTypeIndicator<HashMap<String,Question>> t = new GenericTypeIndicator<HashMap<String, Question>>() {};
+             myRef = database.getReference("QUESTIONS");
+            myRef.addListenerForSingleValueEvent(valueEventListener);
 
-                            questions.setValue( new ArrayList<>( dataSnapshot.getValue(t).values()));
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            //handle databaseError
-                        }
-                    });
 
     }
+
+    public void setFilter(String s) {
+        myRef.orderByChild("mHeader").startAt(s).endAt(s.concat("\uf8ff")).limitToFirst(20).addListenerForSingleValueEvent(valueEventListener);
+    }
+
+    ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            //Get map of users in datasnapshot
+            GenericTypeIndicator<HashMap<String,Question>> t = new GenericTypeIndicator<HashMap<String, Question>>() {};
+
+            questions.setValue( new ArrayList<>( dataSnapshot.getValue(t).values()));
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            //handle databaseError
+        }
+    };
 }

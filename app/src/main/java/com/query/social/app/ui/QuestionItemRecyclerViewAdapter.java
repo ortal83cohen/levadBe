@@ -1,6 +1,11 @@
 package com.query.social.app.ui;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +14,9 @@ import android.widget.TextView;
 import com.query.social.app.R;
 import com.query.social.app.model.Question;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Question} and makes a call to the
@@ -18,22 +25,34 @@ import java.util.List;
  */
 public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<QuestionItemRecyclerViewAdapter.ViewHolder> {
 
-    private  List<Question> mValues;
+    private List<Question> mValues = new ArrayList<>();
     private final QuestionsListFragment.OnListItemListener mListener;
+    Activity activity;
 
-    public void setValues(List<Question> values){
-      mValues=values;
-      notifyDataSetChanged();
+    public void setValues(List<Question> values) {
+        mValues.clear();
+        mValues.addAll(values);
+        notifyDataSetChanged();
     }
-    public QuestionItemRecyclerViewAdapter(List<Question> items, QuestionsListFragment.OnListItemListener listener) {
-        mValues = items;
+
+    public QuestionItemRecyclerViewAdapter(Activity activity,List<Question> items, QuestionsListFragment.OnListItemListener listener) {
+        mValues .addAll(items);
         mListener = listener;
+        this.activity=activity;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_question_item, parent, false);
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        ViewGroup.LayoutParams lp = view.getLayoutParams();
+
+        lp.width=size.x;
+        lp.height=size.x;
+        view.setLayoutParams(lp);
         return new ViewHolder(view);
     }
 
@@ -49,7 +68,7 @@ public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<Questi
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListInteraction(holder.mItem);
+                    mListener.onQuestionItemSelected(holder);
                 }
             }
         });
@@ -57,7 +76,7 @@ public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<Questi
 
     @Override
     public int getItemCount() {
-        if(mValues==null){
+        if (mValues == null) {
             return 0;
         }
         return mValues.size();
@@ -67,13 +86,24 @@ public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<Questi
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final int color;
         public Question mItem;
+        public ConstraintLayout mRoot;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mRoot = (ConstraintLayout) view.findViewById(R.id.root);
+
+            Random rnd = new Random();
+            color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            mRoot.setBackgroundColor(color);
+        }
+
+        public ConstraintLayout getmRoot() {
+            return mRoot;
         }
 
         @Override

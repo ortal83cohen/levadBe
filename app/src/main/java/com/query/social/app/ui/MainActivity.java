@@ -10,12 +10,14 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.view.MenuItem;
 
 import com.google.android.gms.common.Scopes;
@@ -25,7 +27,6 @@ import com.query.social.app.auth.AuthUI;
 import com.query.social.app.auth.ErrorCodes;
 import com.query.social.app.auth.IdpResponse;
 import com.query.social.app.auth.ResultCodes;
-import com.query.social.app.model.Question;
 import com.query.social.app.viewmodel.UserViewModel;
 
 import java.util.ArrayList;
@@ -41,9 +42,11 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
 
     private int RC_SIGN_IN = 100;
     String QUESTION_LIST_FRAGMENT = "questionsListFragment";
+    String ANSWER_FRAGMENT = "answerFragment";
     String ADD_QUESTION_FRAGMENT = "addQuestionFragment";
     QuestionsListFragment questionsListFragment;
     AddQuestionFragment addQuestionFragment;
+    AnswerFragment answerFragment;
     UserViewModel userViewModel;
     private BottomNavigationView navigation;
 
@@ -62,15 +65,16 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         openQuestionListFragment();
-                        break;
+                        return true;
                     case R.id.navigation_dashboard:
-
-                        break;
+                        return true;
                     case R.id.navigation_user:
-                     logInActivity();
-                        break;
+                        logInActivity();
+                        return false;
+                        default:
+                            return false;
                 }
-                return false;
+
             }
         });
 
@@ -110,41 +114,28 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
             questionsListFragment = QuestionsListFragment.newInstance();
         }
         if (!questionsListFragment.isAdded()) {
-            loadFragment(questionsListFragment, true, QUESTION_LIST_FRAGMENT);
+            loadFragment(questionsListFragment, true, false,QUESTION_LIST_FRAGMENT);
         }
     }
 
-    private void loadFragment(Fragment fragment, boolean addToBackStack, String tag) {
+    private void loadFragment(Fragment fragment, boolean addToBackStack,boolean removeOldStack, String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         if (!fragment.isAdded()) {
-            fragmentTransaction.add(R.id.content_frame, fragment, tag);
+            fragmentTransaction.replace(R.id.content_frame, fragment, tag);
         }
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if(removeOldStack) {
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
         if (addToBackStack) {
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();
-        //}
 
     }
 
-
-//    private fun openAddQuestionFragment() {
-//        addQuestionFragment = supportFragmentManager.findFragmentByTag(
-//                ADD_QUESTION_FRAGMENT) as AddQuestionFragment?
-//        if (addQuestionFragment == null) {
-//            addQuestionFragment = AddQuestionFragment.newInstance(questionsListFragment !!.
-//            constructRevealSettings())
-//        }
-//        if (!addQuestionFragment !!.isAdded){
-//            loadFragment(addQuestionFragment !!, true, ADD_QUESTION_FRAGMENT)
-//        }
-//    }
-
-
-    static public Intent createIntent(Context context ) {
+    static public Intent createIntent(Context context) {
         return new Intent(context, MainActivity.class);
     }
 
@@ -193,15 +184,19 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
         showSnackbar(R.string.unknown_sign_in_response);
     }
 
-    @Override public void onBackPressed() {
-        if (addQuestionFragment!=null && addQuestionFragment.isAdded()) {
+    @Override
+    public void onBackPressed() {
+        if (addQuestionFragment != null && addQuestionFragment.isAdded()) {
             (addQuestionFragment).dismiss(new AnimationUtils.Dismissible.OnDismissedListener() {
                 @Override
                 public void onDismissed() {
-                    getSupportFragmentManager().beginTransaction().remove(addQuestionFragment).commitAllowingStateLoss();
+                    if (questionsListFragment == null) {
+                        questionsListFragment = QuestionsListFragment.newInstance();
+                    }
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, questionsListFragment).commitAllowingStateLoss();
                 }
             });
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -292,18 +287,41 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
     }
 
     private void openAddQuestionFragment() {
-        addQuestionFragment = (AddQuestionFragment)getSupportFragmentManager().findFragmentByTag(
-                ADD_QUESTION_FRAGMENT) ;
+        addQuestionFragment = (AddQuestionFragment) getSupportFragmentManager().findFragmentByTag(
+                ADD_QUESTION_FRAGMENT);
         if (addQuestionFragment == null) {
             addQuestionFragment = AddQuestionFragment.newInstance(questionsListFragment.constructRevealSettings());
         }
         if (!addQuestionFragment.isAdded()) {
-            loadFragment(addQuestionFragment, true, ADD_QUESTION_FRAGMENT);
+            loadFragment(addQuestionFragment, true,false, ADD_QUESTION_FRAGMENT);
         }
     }
-    @Override
-    public void onListInteraction(Question item) {
+    private void openQuestionItemFragment(QuestionItemRecyclerViewAdapter.ViewHolder holder) {
+        answerFragment = (AnswerFragment) getSupportFragmentManager().findFragmentByTag(
+                ANSWER_FRAGMENT);
+        if (answerFragment == null) {
+            answerFragment = AnswerFragment.newInstance(holder.color,"");
+        }
+        if (!answerFragment.isAdded()) {
+            ConstraintLayout root = holder.mRoot;
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
+            if (!answerFragment.isAdded()) {
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                answerFragment.setBackgroundColor(holder.color);
+                ViewCompat.setTransitionName(root,"detailsframe");
+
+                fragmentTransaction.addSharedElement(root, ViewCompat.getTransitionName(root));
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.content_frame, answerFragment, ANSWER_FRAGMENT);
+                fragmentTransaction.commit();
+            }
+        }
+    }
+
+    @Override
+    public void onQuestionItemSelected(QuestionItemRecyclerViewAdapter.ViewHolder item) {
+        openQuestionItemFragment(item);
     }
 
     @Override

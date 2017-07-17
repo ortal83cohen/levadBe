@@ -107,6 +107,7 @@ private OnDismissedListener onDismissedListener;
                     googleDatabaseService.saveNewQuestion(new Question(UUID.randomUUID().toString(),
                             questionHeader.getText().toString(),userViewModel.getUser().getValue().getUid(),
                             userViewModel.getUser().getValue().getDisplayName()));
+                    getActivity().onBackPressed();
                 }
 //                mListener.onFragmentInteraction("");
             }

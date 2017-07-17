@@ -9,10 +9,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.query.social.app.R;
 import com.query.social.app.model.Question;
@@ -33,6 +37,7 @@ public class QuestionsListFragment extends Fragment {
     private QuestionItemRecyclerViewAdapter questionItemRecyclerViewAdapter;
     private RecyclerView recyclerView;
     private FloatingActionButton floatingButton;
+    private EditText searchQuestion;
     private QuestionsViewModel questionsViewModel;
 
     /**
@@ -62,8 +67,28 @@ public class QuestionsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_questionitem_list, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.list);      // Set the adapter
-        floatingButton = (FloatingActionButton) view.findViewById(R.id.floatingButton);      // Set the adapter
+        recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(  new DividerItemDecoration(getActivity().getDrawable(R.drawable.list_devider),
+                false, true));
+        floatingButton = (FloatingActionButton) view.findViewById(R.id.floatingButton);
+        searchQuestion = (EditText) view.findViewById(R.id.searchQuestion);
+        searchQuestion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                questionsViewModel.setFilter(s.toString());
+            }
+        });
         return view;
     }
 
@@ -71,12 +96,10 @@ public class QuestionsListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(  new DividerItemDecoration(getActivity().getDrawable(R.drawable.list_devider),
-                false, true));
+
         questionsViewModel = ViewModelProviders.of(this).get(QuestionsViewModel.class);
         LiveData<List<Question>> questions = questionsViewModel.getQuestions();
-         questionItemRecyclerViewAdapter= new QuestionItemRecyclerViewAdapter(questions.getValue(), mListItemListener);
+         questionItemRecyclerViewAdapter= new QuestionItemRecyclerViewAdapter(getActivity(),questions.getValue(), mListItemListener);
         recyclerView.setAdapter(questionItemRecyclerViewAdapter);
         questions.observe((BaseActivity) getActivity(), new Observer<List<Question>>() {
             @Override
@@ -118,7 +141,7 @@ public class QuestionsListFragment extends Fragment {
      */
     public interface OnListItemListener {
         // TODO: Update argument type and name
-        void onListInteraction(Question item);
+        void onQuestionItemSelected(QuestionItemRecyclerViewAdapter.ViewHolder item);
     }
 
 

@@ -122,7 +122,7 @@
 
     <!-- strings for database demo activities -->
 
-    <string name="app_name">Social Query</string>
+    <string name="app_name">LevadBe Berlin</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_user">User</string>

@@ -9,13 +9,15 @@
     tools:context="com.query.social.app.ui.QuestionsListFragment"
 >
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_question_item" android:layout_marginBottom="50dp" />
+        android:paddingTop="50dp"
+        android:clipToPadding="false"
+        tools:listitem="@layout/fragment_question_item"
+        android:layout_marginBottom="50dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingButton"
@@ -29,5 +31,11 @@
         app:layout_anchor="@id/list"
         app:layout_anchorGravity="bottom|right|end" />
 
-
+    <EditText
+        android:id="@+id/searchQuestion"
+        android:layout_width="match_parent"
+        android:background="@android:color/white"
+        app:layout_behavior="com.query.social.app.ui.ScrollAwareBehavior"
+        app:layout_anchorGravity="top"
+        android:layout_height="50dp" />
 </android.support.design.widget.CoordinatorLayout>
