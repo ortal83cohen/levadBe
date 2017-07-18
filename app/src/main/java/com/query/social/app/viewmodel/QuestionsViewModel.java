@@ -47,11 +47,13 @@ public class QuestionsViewModel  extends ViewModel {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             //Get map of users in datasnapshot
-            GenericTypeIndicator<HashMap<String,Question>> t = new GenericTypeIndicator<HashMap<String, Question>>() {};
-
-            questions.setValue( new ArrayList<>( dataSnapshot.getValue(t).values()));
+            GenericTypeIndicator<HashMap<String, Question>> t = new GenericTypeIndicator<HashMap<String, Question>>() {
+            };
+            if (dataSnapshot.getValue(t) != null) {
+                questions.setValue(new ArrayList<>(dataSnapshot.getValue(t).values()));
+            }
         }
-
+        
         @Override
         public void onCancelled(DatabaseError databaseError) {
             //handle databaseError

@@ -51,6 +51,7 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
     public static final int WIDGET_TYPE_FORM = 1;
     public static final int WIDGET_TYPE_WHETHER = 2;
     public static final int WIDGET_TYPE_CLOCK = 3;
+    public static final int WIDGET_TYPE_NOTIFICATION = 4;
     private final List<Widget> mItems = new ArrayList<>();
     Context mContext;
 
@@ -74,12 +75,19 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         switch (viewType) {
             case WIDGET_TYPE_FORM:
                 linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
-
                 widgetItemViewHolder = new FormViewHolderWidget(container);
                 break;
             case WIDGET_TYPE_WHETHER:
                 linearContainer.inflate(mContext, R.layout.weather_item, linearContainer);
                 widgetItemViewHolder = new WeatherViewHolderWidget(container);
+                break;
+            case WIDGET_TYPE_NOTIFICATION:
+                linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
+                widgetItemViewHolder = new SimpleViewHolderWidget(container);
+                break;
+            case WIDGET_TYPE_CLOCK:
+                linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
+                widgetItemViewHolder = new ClockViewHolderWidget(container);
                 break;
             default:
                 linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
@@ -96,18 +104,6 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
     @Override
     public void onBindViewHolder(final WidgetItemViewHolder holder, int position) {
         holder.bind(mContext, mItems.get(position), mOnWidgetClickListener);
-
-
-        // Start a drag whenever the handle view it touched
-//        holder.handleView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-//                    mDragStartListener.onStartDrag(holder);
-//                }
-//                return true;
-//            }
-//        });
 
     }
 
@@ -148,7 +144,7 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         public final FrameLayout item;
 
         public FormViewHolderWidget(View itemView) {
-            super(itemView, true, true);
+            super(itemView, false, false);
             textView = (TextView) itemView.findViewById(R.id.text);
             item = (FrameLayout) itemView.findViewById(R.id.item);
         }
@@ -236,6 +232,33 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
 //        public final ImageView handleView;
 
         public SimpleViewHolderWidget(View itemView) {
+            super(itemView, true, true);
+            textView = (TextView) itemView.findViewById(R.id.text);
+//            handleView = (ImageView) itemView.findViewById(R.id.handle);
+        }
+
+        @Override
+        public void onItemSelected() {
+            //itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            // itemView.setBackgroundColor(0);
+        }
+
+        public void bind(Context context, Widget widget, OnWidgetClickListener onWidgetClickListener) {
+            textView.setText(widget.text);
+        }
+    }
+
+    public static class ClockViewHolderWidget extends WidgetItemViewHolder {
+
+
+        public final TextView textView;
+//        public final ImageView handleView;
+
+        public ClockViewHolderWidget(View itemView) {
             super(itemView, false, false);
             textView = (TextView) itemView.findViewById(R.id.text);
 //            handleView = (ImageView) itemView.findViewById(R.id.handle);

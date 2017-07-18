@@ -52,6 +52,10 @@ String time;
             mItems.add(new Widget(time+"השעה בברלין עכשיו ", WidgetListAdapter.WIDGET_TYPE_CLOCK));
             mItems.add(new Widget("Forum", WidgetListAdapter.WIDGET_TYPE_FORM));
             mItems.add(new WeatherWidget("Whether", WidgetListAdapter.WIDGET_TYPE_WHETHER, new Weather()));
+            mItems.add(new Widget("1", WidgetListAdapter.WIDGET_TYPE_NOTIFICATION));
+            mItems.add(new Widget("2", WidgetListAdapter.WIDGET_TYPE_NOTIFICATION));
+            mItems.add(new Widget("3", WidgetListAdapter.WIDGET_TYPE_NOTIFICATION));
+            mItems.add(new Widget("4", WidgetListAdapter.WIDGET_TYPE_NOTIFICATION));
             widgets.setValue(mItems);
         }
         return widgets;
@@ -85,6 +89,10 @@ String time;
             mItems.add(new Widget(time+"השעה בברלין עכשיו ", WidgetListAdapter.WIDGET_TYPE_CLOCK));
             mItems.add(new Widget("Forum", WidgetListAdapter.WIDGET_TYPE_FORM));
             mItems.add(new WeatherWidget("Whether", WidgetListAdapter.WIDGET_TYPE_WHETHER, weather));
+            mItems.add(new Widget("1", WidgetListAdapter.WIDGET_TYPE_NOTIFICATION));
+            mItems.add(new Widget("2", WidgetListAdapter.WIDGET_TYPE_NOTIFICATION));
+            mItems.add(new Widget("3", WidgetListAdapter.WIDGET_TYPE_NOTIFICATION));
+            mItems.add(new Widget("4", WidgetListAdapter.WIDGET_TYPE_NOTIFICATION));
             widgets.setValue(mItems);
         }
 
