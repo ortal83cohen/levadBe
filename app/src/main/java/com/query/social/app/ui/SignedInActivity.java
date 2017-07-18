@@ -139,7 +139,7 @@ public class SignedInActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            startActivity(MainActivity .createIntent(SignedInActivity.this));
+                            startActivity(MainActivity.createIntent(SignedInActivity.this));
                             finish();
                         } else {
                             showSnackbar(R.string.delete_account_failed);

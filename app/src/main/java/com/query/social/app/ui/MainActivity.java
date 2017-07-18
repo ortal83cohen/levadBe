@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +38,8 @@ import java.util.List;
  */
 
 public class MainActivity extends BaseActivity implements QuestionsListFragment.OnListItemListener
-        , QuestionsListFragment.OnAddMoreItemButtonListener, AddQuestionFragment.OnFragmentInteractionListener {
+        , QuestionsListFragment.OnAddMoreItemButtonListener, AddQuestionFragment.OnFragmentInteractionListener,
+        OnWidgetClickListener {
 
 
     private int RC_SIGN_IN = 100;
@@ -54,9 +56,11 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_questions);
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        openQuestionListFragment();
+//                        openQuestionListFragment();
+        openMainFragment();
+
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -64,15 +68,16 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
 
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        openQuestionListFragment();
+//                        openQuestionListFragment();
+                        openMainFragment();
                         return true;
                     case R.id.navigation_dashboard:
                         return true;
                     case R.id.navigation_user:
                         logInActivity();
                         return false;
-                        default:
-                            return false;
+                    default:
+                        return false;
                 }
 
             }
@@ -86,6 +91,14 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
             }
         });
 
+    }
+
+    private void openMainFragment() {
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, new WidgetListFragment())
+                .addToBackStack(null)
+                .commit();
     }
 
     public void logInActivity() {
@@ -114,18 +127,18 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
             questionsListFragment = QuestionsListFragment.newInstance();
         }
         if (!questionsListFragment.isAdded()) {
-            loadFragment(questionsListFragment, true, false,QUESTION_LIST_FRAGMENT);
+            loadFragment(questionsListFragment, true, false, QUESTION_LIST_FRAGMENT);
         }
     }
 
-    private void loadFragment(Fragment fragment, boolean addToBackStack,boolean removeOldStack, String tag) {
+    private void loadFragment(Fragment fragment, boolean addToBackStack, boolean removeOldStack, String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         if (!fragment.isAdded()) {
             fragmentTransaction.replace(R.id.content_frame, fragment, tag);
         }
-        if(removeOldStack) {
+        if (removeOldStack) {
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         if (addToBackStack) {
@@ -293,14 +306,15 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
             addQuestionFragment = AddQuestionFragment.newInstance(questionsListFragment.constructRevealSettings());
         }
         if (!addQuestionFragment.isAdded()) {
-            loadFragment(addQuestionFragment, true,false, ADD_QUESTION_FRAGMENT);
+            loadFragment(addQuestionFragment, true, false, ADD_QUESTION_FRAGMENT);
         }
     }
+
     private void openQuestionItemFragment(QuestionItemRecyclerViewAdapter.ViewHolder holder) {
         answerFragment = (AnswerFragment) getSupportFragmentManager().findFragmentByTag(
                 ANSWER_FRAGMENT);
         if (answerFragment == null) {
-            answerFragment = AnswerFragment.newInstance(holder.color,"");
+            answerFragment = AnswerFragment.newInstance(holder.color, "");
         }
         if (!answerFragment.isAdded()) {
             ConstraintLayout root = holder.mRoot;
@@ -309,7 +323,7 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
             if (!answerFragment.isAdded()) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 answerFragment.setBackgroundColor(holder.color);
-                ViewCompat.setTransitionName(root,"detailsframe");
+                ViewCompat.setTransitionName(root, "detailsframe");
 
                 fragmentTransaction.addSharedElement(root, ViewCompat.getTransitionName(root));
                 fragmentTransaction.addToBackStack(null);
@@ -332,5 +346,10 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
     @Override
     public void onFragmentInteraction(Uri uri) {
         onBackPressed();
+    }
+
+    @Override
+    public void onWidgetClicked(View v) {
+        openQuestionListFragment();
     }
 }
