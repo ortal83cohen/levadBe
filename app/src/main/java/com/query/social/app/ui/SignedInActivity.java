@@ -30,7 +30,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.query.social.app.R;
 import com.query.social.app.auth.AuthUI;
 import com.query.social.app.auth.AuthUI.IdpConfig;
@@ -42,6 +41,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -152,7 +152,8 @@ public class SignedInActivity extends BaseActivity {
     private void populateProfile() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getPhotoUrl() != null) {
-            Glide.with(this)
+
+            Picasso.with(this)
                     .load(user.getPhotoUrl())
 //                    .fitCenter()
                     .into(mUserProfilePicture);

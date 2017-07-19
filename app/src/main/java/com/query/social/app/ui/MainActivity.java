@@ -3,8 +3,10 @@ package com.query.social.app.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -18,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -28,10 +31,15 @@ import com.query.social.app.auth.AuthUI;
 import com.query.social.app.auth.ErrorCodes;
 import com.query.social.app.auth.IdpResponse;
 import com.query.social.app.auth.ResultCodes;
+import com.query.social.app.service.Router;
 import com.query.social.app.viewmodel.UserViewModel;
+import com.query.social.app.viewmodel.WidgetViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.query.social.app.ui.WidgetListAdapter.WIDGET_TYPE_FORM;
+import static com.query.social.app.ui.WidgetListAdapter.WIDGET_TYPE_MAP;
 
 /**
  * Created by Ortal Cohen on 24/6/2017.
@@ -50,6 +58,7 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
     AddQuestionFragment addQuestionFragment;
     AnswerFragment answerFragment;
     UserViewModel userViewModel;
+    WidgetViewModel widgetViewModel;
     private BottomNavigationView navigation;
 
     @Override
@@ -58,7 +67,35 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
 
         setContentView(R.layout.activity_questions);
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-//                        openQuestionListFragment();
+        widgetViewModel = ViewModelProviders.of(this).get(WidgetViewModel.class);
+
+        userViewModel.getGroups().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(@Nullable List<String> strings) {
+
+                widgetViewModel.addGroupWidgets(strings);
+
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(MainActivity.this);
+                }
+                builder.setTitle("הוספת לקבוצה")
+                        .setMessage(" שם הקבוצה " + strings.get(0))
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
+
+
+        Router.handel(this, getIntent().getData());
+
         openMainFragment();
 
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -349,7 +386,19 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
     }
 
     @Override
-    public void onWidgetClicked(View v) {
-        openQuestionListFragment();
+    public void onWidgetClicked(View v, int widgetType) {
+        switch (widgetType) {
+            case WIDGET_TYPE_FORM:
+                openQuestionListFragment();
+                break;
+            case WIDGET_TYPE_MAP:
+                openMap();
+                break;
+        }
+
+    }
+
+    private void openMap() {
+        startActivity(MapsActivity.createIntent(this));
     }
 }

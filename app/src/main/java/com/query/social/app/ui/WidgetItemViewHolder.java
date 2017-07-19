@@ -37,5 +37,5 @@ public abstract class WidgetItemViewHolder extends RecyclerView.ViewHolder imple
 }
 
 interface OnWidgetClickListener {
-    void onWidgetClicked(View v);
+    void onWidgetClicked(View v,int WidgetType);
 }

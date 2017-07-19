@@ -30,6 +30,8 @@ import com.query.social.app.R;
 import com.query.social.app.helper.ItemTouchHelperAdapter;
 import com.query.social.app.helper.ItemTouchHelperViewHolder;
 import com.query.social.app.helper.OnStartDragListener;
+import com.query.social.app.model.ClockWidget;
+import com.query.social.app.model.NotificationWidget;
 import com.query.social.app.model.Weather;
 import com.query.social.app.model.WeatherWidget;
 import com.query.social.app.model.Widget;
@@ -52,6 +54,7 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
     public static final int WIDGET_TYPE_WHETHER = 2;
     public static final int WIDGET_TYPE_CLOCK = 3;
     public static final int WIDGET_TYPE_NOTIFICATION = 4;
+    public static final int WIDGET_TYPE_MAP = 5;
     private final List<Widget> mItems = new ArrayList<>();
     Context mContext;
 
@@ -63,7 +66,9 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         mOnWidgetClickListener = onWidgetClickListener;
         mContext = context;
         mItems.clear();
-        mItems.addAll(items);
+        if(items!=null) {
+            mItems.addAll(items);
+        }
     }
 
     @Override
@@ -83,15 +88,19 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
                 break;
             case WIDGET_TYPE_NOTIFICATION:
                 linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
-                widgetItemViewHolder = new SimpleViewHolderWidget(container);
+                widgetItemViewHolder = new NotificationViewHolderWidget(container);
                 break;
             case WIDGET_TYPE_CLOCK:
                 linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
                 widgetItemViewHolder = new ClockViewHolderWidget(container);
                 break;
-            default:
+            case WIDGET_TYPE_MAP:
                 linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
-                widgetItemViewHolder = new SimpleViewHolderWidget(container);
+                widgetItemViewHolder = new MapViewHolderWidget(container);
+                break;
+            default:
+//                linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
+                widgetItemViewHolder = null;//new NotificationViewHolderWidget(container);
         }
         return widgetItemViewHolder;
     }
@@ -165,7 +174,7 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
             item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onWidgetClickListener.onWidgetClicked(v);
+                    onWidgetClickListener.onWidgetClicked(v,WIDGET_TYPE_FORM);
                 }
             });
         }
@@ -225,13 +234,13 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
 
     }
 
-    public static class SimpleViewHolderWidget extends WidgetItemViewHolder {
+    public static class NotificationViewHolderWidget extends WidgetItemViewHolder {
 
 
         public final TextView textView;
 //        public final ImageView handleView;
 
-        public SimpleViewHolderWidget(View itemView) {
+        public NotificationViewHolderWidget(View itemView) {
             super(itemView, true, true);
             textView = (TextView) itemView.findViewById(R.id.text);
 //            handleView = (ImageView) itemView.findViewById(R.id.handle);
@@ -248,7 +257,41 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         }
 
         public void bind(Context context, Widget widget, OnWidgetClickListener onWidgetClickListener) {
-            textView.setText(widget.text);
+            textView.setText(((NotificationWidget)widget).text);
+        }
+    }
+
+    public static class MapViewHolderWidget extends WidgetItemViewHolder {
+
+
+        public final TextView textView;
+        public final FrameLayout item;
+
+        public MapViewHolderWidget(View itemView) {
+            super(itemView, true, true);
+            textView = (TextView) itemView.findViewById(R.id.text);
+            item = (FrameLayout) itemView.findViewById(R.id.item);
+        }
+
+        @Override
+        public void onItemSelected() {
+            //itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            // itemView.setBackgroundColor(0);
+        }
+
+        public void bind(Context context, Widget widget, final OnWidgetClickListener onWidgetClickListener) {
+            textView.setText("לחץ לפתיחת מפה");
+            item.setBackground(context.getDrawable(R.drawable.ripple_color_white));
+            item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onWidgetClickListener.onWidgetClicked(v,WIDGET_TYPE_MAP);
+                }
+            });
         }
     }
 
@@ -275,7 +318,7 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         }
 
         public void bind(Context context, Widget widget, OnWidgetClickListener onWidgetClickListener) {
-            textView.setText(widget.text);
+            textView.setText(((ClockWidget)widget).text);
         }
     }
 

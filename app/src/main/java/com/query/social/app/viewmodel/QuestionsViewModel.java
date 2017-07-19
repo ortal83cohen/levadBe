@@ -22,7 +22,7 @@ import java.util.List;
 
 public class QuestionsViewModel  extends ViewModel {
     private final DatabaseReference myRef;
-    FirebaseDatabase database;
+    private FirebaseDatabase database;
     private final MutableLiveData<List<Question>> questions = new MutableLiveData<>();
 
     public LiveData<List<Question>> getQuestions() {
@@ -53,7 +53,7 @@ public class QuestionsViewModel  extends ViewModel {
                 questions.setValue(new ArrayList<>(dataSnapshot.getValue(t).values()));
             }
         }
-        
+
         @Override
         public void onCancelled(DatabaseError databaseError) {
             //handle databaseError

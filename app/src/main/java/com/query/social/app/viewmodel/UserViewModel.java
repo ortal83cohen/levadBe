@@ -8,6 +8,10 @@ import android.support.annotation.NonNull;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.List;
+
+import static java.util.Collections.addAll;
+
 /**
  * Created by Ortal Cohen on 30/5/2017.
  */
@@ -15,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class UserViewModel extends ViewModel {
 
     private final MutableLiveData<FirebaseUser> user = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> userGroups = new MutableLiveData<>();
 
     public UserViewModel() {
         FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
@@ -37,7 +42,19 @@ public class UserViewModel extends ViewModel {
     }
 
 
+    public void addToGroup(List<String> groups) {
+        if(userGroups.getValue()== null){
+            userGroups.setValue(groups);
+        }else {
+            List<String> userGroup = userGroups.getValue();
+            userGroup.addAll(groups);
+            userGroups.setValue(userGroup);
+        }
+    }
 
+    public LiveData<List<String>> getGroups() {
+        return userGroups;
+    }
 }
 
 
