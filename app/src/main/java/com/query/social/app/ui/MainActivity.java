@@ -38,6 +38,7 @@ import com.query.social.app.viewmodel.WidgetViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.query.social.app.ui.WidgetListAdapter.WIDGET_TYPE_ADD_GROUP_WIDGET;
 import static com.query.social.app.ui.WidgetListAdapter.WIDGET_TYPE_FORM;
 import static com.query.social.app.ui.WidgetListAdapter.WIDGET_TYPE_MAP;
 
@@ -52,10 +53,14 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
 
     private int RC_SIGN_IN = 100;
     String QUESTION_LIST_FRAGMENT = "questionsListFragment";
+    String WIDGET_LIST_FRAGMENT = "widgetsListFragment";
     String ANSWER_FRAGMENT = "answerFragment";
     String ADD_QUESTION_FRAGMENT = "addQuestionFragment";
+    String ADD_GROUP_WIDGET_FRAGMENT = "addGroupWidgetFragment";
     QuestionsListFragment questionsListFragment;
+    WidgetListFragment widgetListFragment;
     AddQuestionFragment addQuestionFragment;
+    AddGroupWidgetsFragment addGroupWidgetsFragment;
     AnswerFragment answerFragment;
     UserViewModel userViewModel;
     WidgetViewModel widgetViewModel;
@@ -67,6 +72,7 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
 
         setContentView(R.layout.activity_questions);
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        userViewModel.init(this);
         widgetViewModel = ViewModelProviders.of(this).get(WidgetViewModel.class);
 
         userViewModel.getGroups().observe(this, new Observer<List<String>>() {
@@ -75,21 +81,7 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
 
                 widgetViewModel.addGroupWidgets(strings);
 
-                AlertDialog.Builder builder;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-                } else {
-                    builder = new AlertDialog.Builder(MainActivity.this);
-                }
-                builder.setTitle("הוספת לקבוצה")
-                        .setMessage(" שם הקבוצה " + strings.get(0))
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
+
             }
         });
 
@@ -131,11 +123,14 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
     }
 
     private void openMainFragment() {
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, new WidgetListFragment())
-                .addToBackStack(null)
-                .commit();
+        widgetListFragment = (WidgetListFragment) getSupportFragmentManager().findFragmentByTag(
+                WIDGET_LIST_FRAGMENT);
+        if (widgetListFragment == null) {
+            widgetListFragment = WidgetListFragment.newInstance();
+        }
+        if (!widgetListFragment.isAdded()) {
+            loadFragment(widgetListFragment, true, false, WIDGET_LIST_FRAGMENT);
+        }
     }
 
     public void logInActivity() {
@@ -394,8 +389,22 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
             case WIDGET_TYPE_MAP:
                 openMap();
                 break;
+            case WIDGET_TYPE_ADD_GROUP_WIDGET:
+                openAddGroupWidget();
+                break;
         }
 
+    }
+
+    private void openAddGroupWidget() {
+        addGroupWidgetsFragment = (AddGroupWidgetsFragment) getSupportFragmentManager().findFragmentByTag(
+                ADD_GROUP_WIDGET_FRAGMENT);
+        if (addGroupWidgetsFragment == null) {
+            addGroupWidgetsFragment = AddGroupWidgetsFragment.newInstance();
+        }
+        if (!addGroupWidgetsFragment.isAdded()) {
+            loadFragment(addGroupWidgetsFragment, true, false, ADD_GROUP_WIDGET_FRAGMENT);
+        }
     }
 
     private void openMap() {

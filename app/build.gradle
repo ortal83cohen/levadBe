@@ -65,6 +65,14 @@ dependencies {
     compile "android.arch.lifecycle:runtime:$rootProject.archVersion"
     compile "android.arch.lifecycle:extensions:$rootProject.archVersion"
 
+    compile ('com.squareup.retrofit2:retrofit:2.3.0') {
+        // exclude Retrofit’s OkHttp dependency module and define your own module import
+        exclude module: 'okhttp'
+    }
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
 //    annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archVersion"
 //    testCompile 'junit:junit:4.12'
 //    //noinspection GradleDynamicVersion
@@ -78,7 +86,9 @@ dependencies {
 
 
 
+    implementation 'com.android.support:support-v4:25.4.0'
 }
+
 
 
 

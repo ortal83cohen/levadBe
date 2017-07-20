@@ -16,8 +16,6 @@
 
 package com.query.social.app.ui;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -35,17 +33,11 @@ import android.widget.ImageView;
 import com.query.social.app.R;
 import com.query.social.app.helper.OnStartDragListener;
 import com.query.social.app.helper.SimpleItemTouchHelperCallback;
-import com.query.social.app.model.Widget;
-import com.query.social.app.viewmodel.WidgetViewModel;
-
-import java.util.List;
-
 
 public class WidgetListFragment extends Fragment implements OnStartDragListener {
     private RecyclerView recyclerView;
     private View view;
     private ItemTouchHelper mItemTouchHelper;
-    private WidgetViewModel mWidgetViewModel;
 
 
     public WidgetListFragment() {
@@ -64,9 +56,8 @@ public class WidgetListFragment extends Fragment implements OnStartDragListener 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mWidgetViewModel = ViewModelProviders.of(this).get(WidgetViewModel.class);
 
-        final WidgetListAdapter adapter = new WidgetListAdapter(getActivity(), this, ((OnWidgetClickListener) getActivity()), mWidgetViewModel.getWidget().getValue());
+        final WidgetListAdapter adapter = new WidgetListAdapter((BaseActivity) getActivity(), this, ((OnWidgetClickListener) getActivity()));
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -76,16 +67,10 @@ public class WidgetListFragment extends Fragment implements OnStartDragListener 
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
 
-        mWidgetViewModel.getWidget().observe(((BaseActivity) getActivity()), new Observer<List<Widget>>() {
-            @Override
-            public void onChanged(@Nullable List<Widget> widgets) {
-                adapter.setItems(widgets);
-            }
-        });
 
         final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
@@ -94,6 +79,11 @@ public class WidgetListFragment extends Fragment implements OnStartDragListener 
         loadBackdrop();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((WidgetListAdapter)recyclerView.getAdapter()).updateState();
+    }
 
     private void loadBackdrop() {
         final ImageView imageView = (ImageView) view.findViewById(R.id.backdrop);
@@ -106,4 +96,11 @@ public class WidgetListFragment extends Fragment implements OnStartDragListener 
         mItemTouchHelper.startDrag(viewHolder);
     }
 
+    public static WidgetListFragment newInstance() {
+        WidgetListFragment fragment = new WidgetListFragment();
+        Bundle args = new Bundle();
+
+        fragment.setArguments(args);
+        return fragment;
+    }
 }

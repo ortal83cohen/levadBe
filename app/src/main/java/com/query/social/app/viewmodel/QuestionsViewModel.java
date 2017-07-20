@@ -29,6 +29,32 @@ public class QuestionsViewModel  extends ViewModel {
         return questions;
     }
 
+    public void saveNewQuestion(Question question) {
+
+        DatabaseReference myRef = database.getReference("QUESTIONS");
+
+        myRef.push().setValue(question);
+    }
+
+
+    public List<Question> getQuestionsList(){
+        DatabaseReference myRef = database.getReference("QUESTIONS");
+        myRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //Get map of users in datasnapshot
+                        dataSnapshot.getValue();
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //handle databaseError
+                    }
+                });
+        return null;
+    }
     public QuestionsViewModel() {
         questions.setValue(new ArrayList<Question>());
             database = FirebaseDatabase.getInstance();

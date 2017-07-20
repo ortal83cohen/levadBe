@@ -16,7 +16,10 @@
 
 package com.query.social.app.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,18 +29,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.query.social.app.LevadBeApplication;
 import com.query.social.app.R;
 import com.query.social.app.helper.ItemTouchHelperAdapter;
 import com.query.social.app.helper.ItemTouchHelperViewHolder;
 import com.query.social.app.helper.OnStartDragListener;
 import com.query.social.app.model.ClockWidget;
 import com.query.social.app.model.NotificationWidget;
+import com.query.social.app.model.AddGroupWidgetWidget;
 import com.query.social.app.model.Weather;
 import com.query.social.app.model.WeatherWidget;
 import com.query.social.app.model.Widget;
+import com.query.social.app.viewmodel.ManagerWidgetViewModel;
+import com.query.social.app.viewmodel.WidgetViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,23 +60,37 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
     public static final int WIDGET_TYPE_WHETHER = 2;
     public static final int WIDGET_TYPE_CLOCK = 3;
     public static final int WIDGET_TYPE_NOTIFICATION = 4;
-    public static final int WIDGET_TYPE_MAP = 5;
-    private final List<Widget> mItems = new ArrayList<>();
-    Context mContext;
+    public static final int WIDGET_TYPE_ADD_GROUP_WIDGET = 5;
+    public static final int WIDGET_TYPE_MAP = 6;
+    private  WidgetViewModel mWidgetViewModel;
+
+    BaseActivity mContext;
 
     private final OnStartDragListener mDragStartListener;
     private final OnWidgetClickListener mOnWidgetClickListener;
 
-    public WidgetListAdapter(Context context, OnStartDragListener dragStartListener, OnWidgetClickListener onWidgetClickListener, List<Widget> items) {
+    public WidgetListAdapter(BaseActivity context, OnStartDragListener dragStartListener, OnWidgetClickListener onWidgetClickListener) {
         mDragStartListener = dragStartListener;
         mOnWidgetClickListener = onWidgetClickListener;
         mContext = context;
-        mItems.clear();
-        if(items!=null) {
-            mItems.addAll(items);
-        }
+
+        mWidgetViewModel = ViewModelProviders.of(context).get(LevadBeApplication.isManager()? ManagerWidgetViewModel.class:WidgetViewModel.class);
+
+        mWidgetViewModel.getWidget().observe((context), new Observer<List<Widget>>() {
+            @Override
+            public void onChanged(@Nullable List<Widget> widgets) {
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
+
+    public void updateState(){
+
+        mWidgetViewModel = ViewModelProviders.of(mContext).get(LevadBeApplication.isManager()? ManagerWidgetViewModel.class:WidgetViewModel.class);
+        notifyDataSetChanged();
+    }
     @Override
     public WidgetItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -98,6 +118,10 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
                 linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
                 widgetItemViewHolder = new MapViewHolderWidget(container);
                 break;
+                case WIDGET_TYPE_ADD_GROUP_WIDGET:
+                linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
+                widgetItemViewHolder = new SendNotificationViewHolderWidget(container);
+                break;
             default:
 //                linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
                 widgetItemViewHolder = null;//new NotificationViewHolderWidget(container);
@@ -107,38 +131,33 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        return mItems.get(position).type;
+        return mWidgetViewModel.getWidget().getValue().get(position).type;
     }
 
     @Override
     public void onBindViewHolder(final WidgetItemViewHolder holder, int position) {
-        holder.bind(mContext, mItems.get(position), mOnWidgetClickListener);
+        holder.bind(mContext, mWidgetViewModel.getWidget().getValue().get(position), mOnWidgetClickListener);
 
     }
 
     @Override
     public void onItemDismiss(int position) {
-        mItems.remove(position);
+        mWidgetViewModel.removeWidget(position);
         notifyItemRemoved(position);
     }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(mItems, fromPosition, toPosition);
+        Collections.swap(mWidgetViewModel.getWidget().getValue(), fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
         return true;
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return mWidgetViewModel.getWidget().getValue().size();
     }
 
-    public void setItems(List<Widget> widgets) {
-        mItems.clear();
-        mItems.addAll(widgets);
-        notifyDataSetChanged();
-    }
 
     /**
      * Simple example of a view holder that implements {@link ItemTouchHelperViewHolder} and has a
@@ -261,6 +280,41 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         }
     }
 
+ public static class SendNotificationViewHolderWidget extends WidgetItemViewHolder {
+
+
+        public final TextView textView;
+        public final FrameLayout item;
+
+        public SendNotificationViewHolderWidget(View itemView) {
+            super(itemView, true, true);
+            textView = (TextView) itemView.findViewById(R.id.text);
+            item = (FrameLayout) itemView.findViewById(R.id.item);
+//            handleView = (ImageView) itemView.findViewById(R.id.handle);
+        }
+
+        @Override
+        public void onItemSelected() {
+            //itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            // itemView.setBackgroundColor(0);
+        }
+
+        public void bind(Context context, final Widget widget, final OnWidgetClickListener onWidgetClickListener) {
+            textView.setText(((AddGroupWidgetWidget)widget).text);
+            item.setBackground(context.getDrawable(R.drawable.ripple_color_white));
+            item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onWidgetClickListener.onWidgetClicked(v,widget.type);
+                }
+            });
+        }
+    }
+
     public static class MapViewHolderWidget extends WidgetItemViewHolder {
 
 
@@ -283,13 +337,13 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
             // itemView.setBackgroundColor(0);
         }
 
-        public void bind(Context context, Widget widget, final OnWidgetClickListener onWidgetClickListener) {
+        public void bind(Context context, final Widget widget, final OnWidgetClickListener onWidgetClickListener) {
             textView.setText("לחץ לפתיחת מפה");
             item.setBackground(context.getDrawable(R.drawable.ripple_color_white));
             item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onWidgetClickListener.onWidgetClicked(v,WIDGET_TYPE_MAP);
+                    onWidgetClickListener.onWidgetClicked(v,widget.type);
                 }
             });
         }

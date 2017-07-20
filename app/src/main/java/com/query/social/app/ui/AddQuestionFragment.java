@@ -15,8 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.query.social.app.model.Question;
-import com.query.social.app.service.GoogleDatabaseService;
 import com.query.social.app.R;
+import com.query.social.app.viewmodel.QuestionsViewModel;
 import com.query.social.app.viewmodel.UserViewModel;
 
 import java.util.UUID;
@@ -41,7 +41,7 @@ private OnDismissedListener onDismissedListener;
 
     private OnFragmentInteractionListener mListener;
     private Button submit;
-    private GoogleDatabaseService googleDatabaseService;
+    private QuestionsViewModel questionsViewModel;
     private EditText questionHeader;
     private UserViewModel userViewModel;
 
@@ -74,11 +74,12 @@ private OnDismissedListener onDismissedListener;
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_question, container, false);
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        userViewModel.init(getActivity());
         AnimationUtils.registerCircularRevealAnimation(getContext(), view, revealAnimationSetting,
                 revealAnimationSetting.getFabColor(),revealAnimationSetting.getPageColor());
         questionHeader = (EditText)view.findViewById(R.id.askQuestion);
         submit = (Button)view.findViewById(R.id.submitButton);
-         googleDatabaseService = new GoogleDatabaseService();
+        questionsViewModel = ViewModelProviders.of(this).get(QuestionsViewModel.class);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +105,7 @@ private OnDismissedListener onDismissedListener;
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }else {
-                    googleDatabaseService.saveNewQuestion(new Question(UUID.randomUUID().toString(),
+                    questionsViewModel.saveNewQuestion(new Question(UUID.randomUUID().toString(),
                             questionHeader.getText().toString(),userViewModel.getUser().getValue().getUid(),
                             userViewModel.getUser().getValue().getDisplayName()));
                     getActivity().onBackPressed();

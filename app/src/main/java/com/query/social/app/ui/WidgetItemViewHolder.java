@@ -31,7 +31,7 @@ public abstract class WidgetItemViewHolder extends RecyclerView.ViewHolder imple
         return dragable;
     }
 
-    public void bind(Context context, Widget widget,OnWidgetClickListener onWidgetClickListener) {
+    public void bind(final Context context,final  Widget widget,final OnWidgetClickListener onWidgetClickListener) {
 
     }
 }

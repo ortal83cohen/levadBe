@@ -27,13 +27,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.query.social.app.R;
-import com.query.social.app.auth.AuthUI;
-import com.query.social.app.auth.AuthUI.IdpConfig;
-import com.query.social.app.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -41,6 +38,11 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.query.social.app.LevadBeApplication;
+import com.query.social.app.R;
+import com.query.social.app.auth.AuthUI;
+import com.query.social.app.auth.AuthUI.IdpConfig;
+import com.query.social.app.auth.IdpResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -74,6 +76,9 @@ public class SignedInActivity extends BaseActivity {
     @BindView(R.id.user_enabled_providers)
     TextView mEnabledProviders;
 
+    @BindView(R.id.manager)
+    Button manager;
+
     private IdpResponse mIdpResponse;
 
     private SignedInConfig mSignedInConfig;
@@ -96,6 +101,10 @@ public class SignedInActivity extends BaseActivity {
         ButterKnife.bind(this);
         populateProfile();
         populateIdpToken();
+
+
+        manager.setText(LevadBeApplication.isManager() ? "החלף למשתמש" : "החלף לניהול");
+
     }
 
     @OnClick(R.id.sign_out)
@@ -113,6 +122,14 @@ public class SignedInActivity extends BaseActivity {
                         }
                     }
                 });
+    }
+
+    @OnClick(R.id.manager)
+    public void manager() {
+        LevadBeApplication.setIsManager(!LevadBeApplication.isManager());
+
+        manager.setText(LevadBeApplication.isManager() ? "החלף למשתמש" : "החלף לניהול");
+
     }
 
     @OnClick(R.id.delete_account)

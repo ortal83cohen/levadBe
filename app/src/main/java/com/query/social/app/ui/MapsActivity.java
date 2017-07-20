@@ -4,13 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 
-import com.google.android.gms.common.ConnectionResult;
-//import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,6 +15,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.query.social.app.R;
+
+//import com.google.android.gms.common.GooglePlayServicesClient;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -50,12 +49,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng( 52.522401, 13.412603);
+        LatLng sydney = new LatLng(52.522401, 13.412603);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Primark"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,13));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] {
+            ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.READ_PHONE_STATE
             }, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -65,6 +64,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public static Intent createIntent(Context context) {
-        return new Intent(context,MapsActivity.class);
+        return new Intent(context, MapsActivity.class);
     }
 }
