@@ -25,25 +25,33 @@ android {
         }
 
     }
+    signingConfigs {
+        release {
+            storeFile file("C:\\Users\\Ortal Cohen\\Documents\\levadBeBerlin\\key.jks")
+            storePassword System.getenv("LEVADBE_KEYSTORE_PASSWORD")
+            keyAlias "key"
+            keyPassword System.getenv("LEVADBE_KEY_PASSWORD")
+        }
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testImplementation 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
 
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     compile "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile "com.android.support:customtabs:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:support-v4:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:design:$rootProject.supportLibraryVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
 
@@ -53,7 +61,7 @@ dependencies {
     compile "com.google.firebase:firebase-appindexing:$rootProject.googlePlayServices"
     compile "com.google.firebase:firebase-auth:$rootProject.googlePlayServices"
     compile "com.google.firebase:firebase-messaging:$rootProject.googlePlayServices"
-    implementation "com.google.android.gms:play-services-maps:$rootProject.googlePlayServices"
+    compile "com.google.android.gms:play-services-maps:$rootProject.googlePlayServices"
     compile "com.google.android.gms:play-services-auth:$rootProject.googlePlayServices"
 
     compile 'com.facebook.android:facebook-android-sdk:4.23.0'
@@ -65,7 +73,7 @@ dependencies {
     compile "android.arch.lifecycle:runtime:$rootProject.archVersion"
     compile "android.arch.lifecycle:extensions:$rootProject.archVersion"
 
-    compile ('com.squareup.retrofit2:retrofit:2.3.0') {
+    compile('com.squareup.retrofit2:retrofit:2.3.0') {
         // exclude Retrofit’s OkHttp dependency module and define your own module import
         exclude module: 'okhttp'
     }
@@ -86,7 +94,7 @@ dependencies {
 
 
 
-    implementation 'com.android.support:support-v4:25.4.0'
+    compile 'com.android.support:support-v4:25.4.0'
 }
 
 

@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.query.social.app.auth.ui.phone.CountryListSpinner
+        <com.levadbe.berlin.app.auth.ui.phone.CountryListSpinner
             android:id="@+id/country_list"
             style="@style/FirebaseUI.CountrySpinner" />
 

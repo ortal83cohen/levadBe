@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.query.social.app">
+    package="com.levadbe.berlin.app">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name=".LevadBeApplication"
+        android:name="com.levadbe.berlin.app.LevadBeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -35,7 +35,7 @@
             android:value="${enableFbLogging}" />
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.levadbe.berlin.app.ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -45,41 +45,41 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".auth.KickoffActivity"
+            android:name="com.levadbe.berlin.app.auth.KickoffActivity"
             android:exported="false"
             android:label=""
             android:theme="@style/FirebaseUI.Transparent" />
         <!--<activity-->
-            <!--android:name=".AuthUiActivity"-->
-            <!--android:exported="false"-->
-            <!--android:label="" />-->
+        <!--android:name=".AuthUiActivity"-->
+        <!--android:exported="false"-->
+        <!--android:label="" />-->
         <activity
-            android:name=".auth.ui.email.RecoverPasswordActivity"
+            android:name="com.levadbe.berlin.app.auth.ui.email.RecoverPasswordActivity"
             android:exported="false"
             android:label="@string/title_recover_password_activity" />
         <activity
-            android:name=".auth.ui.email.RegisterEmailActivity"
+            android:name="com.levadbe.berlin.app.auth.ui.email.RegisterEmailActivity"
             android:exported="false"
             android:label="@string/sign_in_default" />
         <activity
-            android:name=".auth.ui.phone.PhoneVerificationActivity"
+            android:name="com.levadbe.berlin.app.auth.ui.phone.PhoneVerificationActivity"
             android:exported="false"
             android:label="@string/sign_in_with_phone_number"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
-            android:name=".auth.ui.accountlink.WelcomeBackIdpPrompt"
+            android:name="com.levadbe.berlin.app.auth.ui.accountlink.WelcomeBackIdpPrompt"
             android:exported="false"
             android:label="@string/title_welcome_back_idp_prompt" />
         <activity
-            android:name=".ui.SignedInActivity"
+            android:name="com.levadbe.berlin.app.ui.SignedInActivity"
             android:exported="false"
             android:label="@string/title_welcome_back_idp_prompt" />
         <activity
-            android:name=".auth.ui.accountlink.WelcomeBackPasswordPrompt"
+            android:name="com.levadbe.berlin.app.auth.ui.accountlink.WelcomeBackPasswordPrompt"
             android:exported="false"
             android:label="@string/title_welcome_back_password_prompt" />
         <activity
-            android:name=".auth.ui.idp.AuthMethodPickerActivity"
+            android:name="com.levadbe.berlin.app.auth.ui.idp.AuthMethodPickerActivity"
             android:exported="false"
             android:label="@string/default_toolbar_title" />
         <activity
@@ -88,23 +88,23 @@
             android:label="@string/app_name"
             tools:ignore="MissingRegistered" />
         <activity
-            android:name=".ui.MapsActivity"
+            android:name="com.levadbe.berlin.app.ui.MapsActivity"
             android:label="@string/title_activity_maps" />
 
-        <service android:name=".service.LevadFirebaseMessagingService">
+        <service android:name="com.levadbe.berlin.app.service.LevadFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".service.LevadFirebaseInstanceIDService">
+        <service android:name="com.levadbe.berlin.app.service.LevadFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
         <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="@string/google_maps_key" />
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

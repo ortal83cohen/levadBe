@@ -26,7 +26,7 @@
             android:textColor="@color/linkColor"
             tools:ignore="SelectableText" />
 
-        <com.query.social.app.auth.ui.phone.SpacedEditText
+        <com.levadbe.berlin.app.auth.ui.phone.SpacedEditText
             android:id="@+id/confirmation_code"
             spacingProportion="1.1"
             android:layout_width="match_parent"
@@ -88,7 +88,7 @@
 
         </LinearLayout>
 
-        <com.query.social.app.auth.ui.TermsTextView
+        <com.levadbe.berlin.app.auth.ui.TermsTextView
             android:id="@+id/create_account_tos"
             style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
