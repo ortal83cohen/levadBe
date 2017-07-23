@@ -10,8 +10,8 @@ public class WeatherWidget extends Widget {
 
     private Weather weather;
 
-    public WeatherWidget(Weather weather) {
-        super(WidgetListAdapter.WIDGET_TYPE_WHETHER);
+    public WeatherWidget(Weather weather,String id) {
+        super(WidgetListAdapter.WIDGET_TYPE_WHETHER,id);
         this.weather = weather;
     }
 

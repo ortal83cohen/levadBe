@@ -10,8 +10,8 @@ public class MapWidget extends Widget {
 
     private Weather weather;
 
-    public MapWidget() {
-        super(WidgetListAdapter.WIDGET_TYPE_MAP);
+    public MapWidget(String id) {
+        super(WidgetListAdapter.WIDGET_TYPE_MAP,id);
 
     }
 

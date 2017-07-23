@@ -46,6 +46,7 @@ import com.levadbe.berlin.app.viewmodel.ManagerWidgetViewModel;
 import com.levadbe.berlin.app.viewmodel.WidgetViewModel;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

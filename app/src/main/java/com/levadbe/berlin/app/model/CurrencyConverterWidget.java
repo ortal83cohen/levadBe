@@ -10,8 +10,8 @@ public class CurrencyConverterWidget extends Widget {
 
     public String text;
 
-    public CurrencyConverterWidget(String text) {
-        super(WidgetListAdapter.WIDGET_TYPE_CURRENCY_CONVERTER);
+    public CurrencyConverterWidget(String text,String id) {
+        super(WidgetListAdapter.WIDGET_TYPE_CURRENCY_CONVERTER,id);
         this.text = text;
     }
 

@@ -9,8 +9,8 @@ import com.levadbe.berlin.app.ui.WidgetListAdapter;
 public class ForumWidget extends Widget {
 
 
-    public ForumWidget() {
-        super(WidgetListAdapter.WIDGET_TYPE_FORM);
+    public ForumWidget(String id) {
+        super(WidgetListAdapter.WIDGET_TYPE_FORM,id);
 
     }
 

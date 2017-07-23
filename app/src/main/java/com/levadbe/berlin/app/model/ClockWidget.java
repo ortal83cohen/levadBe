@@ -13,8 +13,8 @@ public class ClockWidget extends Widget {
 
     public String text;
 
-    public ClockWidget() {
-        super(WidgetListAdapter.WIDGET_TYPE_CLOCK);
+    public ClockWidget(String id) {
+        super(WidgetListAdapter.WIDGET_TYPE_CLOCK,id);
         TimeZone tz = TimeZone.getTimeZone("GMT+01:00");
         Calendar c = Calendar.getInstance(tz);
         String time = String.format("%02d", c.get(Calendar.HOUR_OF_DAY)) + ":" +

@@ -44,14 +44,14 @@ public class QuestionItemRecyclerViewAdapter extends RecyclerView.Adapter<Questi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_question_item, parent, false);
+                .inflate(R.layout.question_item, parent, false);
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         ViewGroup.LayoutParams lp = view.getLayoutParams();
 
         lp.width = size.x;
-        lp.height = size.x;
+//        lp.height = size.x;
         view.setLayoutParams(lp);
         return new ViewHolder(view);
     }

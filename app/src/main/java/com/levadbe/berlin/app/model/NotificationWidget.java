@@ -10,8 +10,8 @@ public class NotificationWidget extends Widget {
 
     public String text;
 
-    public NotificationWidget(String text) {
-        super(WidgetListAdapter.WIDGET_TYPE_NOTIFICATION);
+    public NotificationWidget(String text,String id) {
+        super(WidgetListAdapter.WIDGET_TYPE_NOTIFICATION,id);
         this.text = text;
     }
 

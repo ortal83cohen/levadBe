@@ -82,7 +82,7 @@ public class MainActivity extends BaseActivity implements QuestionsListFragment.
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         userViewModel.init(this);
         widgetViewModel = ViewModelProviders.of(this).get(WidgetViewModel.class);
-
+        widgetViewModel.init(this);
         userViewModel.getGroups().observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> strings) {

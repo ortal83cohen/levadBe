@@ -11,8 +11,8 @@ public class LinkWidget extends Widget {
     public String text;
     public String link;
 
-    public LinkWidget(String text, String link) {
-        super(WidgetListAdapter.WIDGET_TYPE_LINK);
+    public LinkWidget(String text, String link,String id) {
+        super(WidgetListAdapter.WIDGET_TYPE_LINK,id);
         this.text = text;
         this.link = link;
     }

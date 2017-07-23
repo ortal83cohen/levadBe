@@ -1,5 +1,7 @@
 package com.levadbe.berlin.app.model;
 
+import java.util.UUID;
+
 /**
  * Created by Ortal Cohen on 18/7/2017.
  */
@@ -7,8 +9,10 @@ package com.levadbe.berlin.app.model;
 public abstract class Widget {
 
     public int type;
+    public String id;
 
-    public Widget(int type) {
+    public Widget(int type,String id) {
         this.type = type;
+        this.id=id;
     }
 }

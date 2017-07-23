@@ -54,7 +54,7 @@
         app:layoutManager="LinearLayoutManager"
 
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/fragment_question_item" />
+        tools:listitem="@layout/question_item" />
 
 
     <!--<android.support.design.widget.FloatingActionButton-->
@@ -71,7 +71,7 @@
 
     <!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:app="http://schemas.android.com/apk/res-auto"--><!--xmlns:tools="http://schemas.android.com/tools"--><!--android:id="@+id/main_content"--><!--android:name="com.levadbe.berlin.app.ui.QuestionFragment"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--tools:context="com.levadbe.berlin.app.ui.QuestionsListFragment"--><!--&gt;-->
 
-    <!--<android.support.v7.widget.RecyclerView--><!--android:id="@+id/list"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--app:layoutManager="LinearLayoutManager"--><!--android:paddingTop="50dp"--><!--android:clipToPadding="false"--><!--tools:listitem="@layout/fragment_question_item" />-->
+    <!--<android.support.v7.widget.RecyclerView--><!--android:id="@+id/list"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--app:layoutManager="LinearLayoutManager"--><!--android:paddingTop="50dp"--><!--android:clipToPadding="false"--><!--tools:listitem="@layout/question_item" />-->
 
     <!--<android.support.design.widget.FloatingActionButton--><!--android:id="@+id/floatingButton"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="bottom|right"--><!--android:layout_marginRight="16dp"--><!--android:layout_marginBottom="74dp"--><!--android:src="@android:drawable/ic_menu_add"--><!--app:layout_behavior="com.levadbe.berlin.app.ui.ScrollAwareBehavior"--><!--app:layout_anchor="@id/list"--><!--app:layout_anchorGravity="bottom|right|end" />-->
 

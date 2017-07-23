@@ -15,7 +15,7 @@
         android:clipToPadding="false"
         android:paddingTop="50dp"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_question_item" />
+        tools:listitem="@layout/question_item" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingButton"
