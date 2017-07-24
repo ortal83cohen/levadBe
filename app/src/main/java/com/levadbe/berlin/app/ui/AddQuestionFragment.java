@@ -102,7 +102,7 @@ public class AddQuestionFragment extends Fragment implements AnimationUtils.Dism
                                     // do nothing
                                 }
                             })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setIcon(android.R.drawable.ic_dialog_info)
                             .show();
                 } else {
                     questionsViewModel.saveNewQuestion(new Question(UUID.randomUUID().toString(),

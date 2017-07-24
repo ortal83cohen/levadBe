@@ -1,18 +1,21 @@
 package com.levadbe.berlin.app.viewmodel;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
+import android.content.Context;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import com.levadbe.berlin.app.model.LinkWidget;
+import com.levadbe.berlin.app.model.NotificationWidget;
+import com.levadbe.berlin.app.model.Widget;
 import com.levadbe.berlin.app.service.SharedPreferencesService;
-
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.content.Context;
 
 import java.util.UUID;
 
@@ -65,6 +68,10 @@ public class AddWidgetViewModel extends ViewModel {
         return link;
     }
 
+    public LiveData getWidgetTypeSpinner() {
+        return widgetTypeSpinner;
+    }
+
 
     ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
@@ -81,16 +88,28 @@ public class AddWidgetViewModel extends ViewModel {
     public AddWidgetViewModel() {
 
         database = FirebaseDatabase.getInstance();
-         myRef = database.getReference("GROUP_WIDGETS");
+        myRef = database.getReference("GROUP_WIDGETS");
 //        myRef.addListenerForSingleValueEvent(valueEventListener);
 
 
     }
 
-    public void saveGroupWidget(){
-        myRef.child(groupsSpinner.getValue()).child(header.getValue()).setValue(new LinkWidget(header.getValue(),link.getValue(), UUID.randomUUID().toString()));
-    }
+    public void saveGroupWidget(int position, OnSuccessListener onSuccessListener) {
+        Widget widget = null;
+        switch (position) {
+            case 2:
+                widget = new LinkWidget(header.getValue(), link.getValue(), UUID.randomUUID().toString());
+                break;
+            case 3:
+                widget = new NotificationWidget(header.getValue(), UUID.randomUUID().toString());
+                break;
+        }
 
+        if (widget != null) {
+            Task<Void> task = myRef.child(groupsSpinner.getValue()).child(header.getValue()).setValue(widget);
+            task.addOnSuccessListener(onSuccessListener);
+        }
+    }
 
 }
 

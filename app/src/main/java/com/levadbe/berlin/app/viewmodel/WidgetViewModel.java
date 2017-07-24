@@ -51,8 +51,6 @@ public class WidgetViewModel extends ViewModel {
 
     private List<Widget> dynamicWidgets = new ArrayList<>();
 
-    private HashMap<String, Widget> dynamicGroupWidgets = new HashMap<>();
-
     ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -62,13 +60,15 @@ public class WidgetViewModel extends ViewModel {
                 List<Widget> items = widgets.getValue();
                 for (Widget dynamicItem : dynamicWidgets) {
                     boolean hesItem = false;
-                    for (Widget item : items) {
-                        if (item.id.equals(dynamicItem.id)) {
-                            hesItem = true;
+                    if(items!=null) {
+                        for (Widget item : items) {
+                            if (item.id.equals(dynamicItem.id)) {
+                                hesItem = true;
+                            }
                         }
-                    }
-                    if (!hesItem) {
-                        items.add(dynamicItem);
+                        if (!hesItem) {
+                            items.add(dynamicItem);
+                        }
                     }
                 }
                 widgets.setValue(items);
@@ -170,7 +170,7 @@ public class WidgetViewModel extends ViewModel {
 
         String group = strings.get(0);
         myRef.orderByKey().startAt(group).endAt(group.concat("\uf8ff")).limitToFirst(1).
-                addListenerForSingleValueEvent(valueEventListener);
+                addValueEventListener(valueEventListener);
     }
 
     public void removeWidget(int position) {

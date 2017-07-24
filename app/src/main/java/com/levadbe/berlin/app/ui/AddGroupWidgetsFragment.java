@@ -1,14 +1,13 @@
 package com.levadbe.berlin.app.ui;
 
-import com.levadbe.berlin.app.R;
-import com.levadbe.berlin.app.helper.Strings;
-import com.levadbe.berlin.app.viewmodel.AddWidgetViewModel;
-
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -20,6 +19,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.levadbe.berlin.app.R;
+import com.levadbe.berlin.app.helper.Strings;
+import com.levadbe.berlin.app.viewmodel.AddWidgetViewModel;
 
 public class AddGroupWidgetsFragment extends Fragment {
 
@@ -62,7 +66,7 @@ public class AddGroupWidgetsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_widgets, container, false);
 
@@ -84,7 +88,7 @@ public class AddGroupWidgetsFragment extends Fragment {
         final String[] widgetTypeItems = new String[]{getString(R.string.select_widget), getString(R.string.maps_widget),
                 getString(R.string.link_widget), getString(
                 R.string.massage_widget)};
-        ArrayAdapter<String> widgetTypeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+        final ArrayAdapter<String> widgetTypeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                 widgetTypeItems);
         widgetTypeSpinner.setAdapter(widgetTypeAdapter);
         widgetTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -115,7 +119,6 @@ public class AddGroupWidgetsFragment extends Fragment {
         });
 
 
-
         final String[] groupsItems = new String[]{"בחר קבוצה", "קבוצה 1"};
         ArrayAdapter<String> groupsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, groupsItems);
         groupsSpinner.setAdapter(groupsAdapter);
@@ -136,7 +139,27 @@ public class AddGroupWidgetsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (validateFields()) {
-                    addWidgetViewModel.saveGroupWidget();
+                    addWidgetViewModel.saveGroupWidget(widgetTypeAdapter.getPosition((String) addWidgetViewModel.getWidgetTypeSpinner().getValue()), new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+
+                            AlertDialog.Builder builder;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Dialog_Alert);
+                            } else {
+                                builder = new AlertDialog.Builder(getActivity());
+                            }
+                            builder.setTitle("הוספת ויג'ט")
+//                                    .setMessage(" שם הקבוצה " + groups.get(0))
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            getActivity().onBackPressed();
+                                        }
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_info)
+                                    .show();
+                        }
+                    });
                 }
             }
         });
@@ -183,7 +206,7 @@ public class AddGroupWidgetsFragment extends Fragment {
                 header.getVisibility() == View.VISIBLE && Strings.isNullOrEmpty(header.getText().toString())) {
             return false;
         }
-        if( link.getVisibility() == View.VISIBLE && !URLUtil.isValidUrl(link.getText().toString()) ){
+        if (link.getVisibility() == View.VISIBLE && !URLUtil.isValidUrl(link.getText().toString())) {
             linkWrapper.setError("חייב להיות לינק");
             return false;
         }

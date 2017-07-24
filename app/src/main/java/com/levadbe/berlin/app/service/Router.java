@@ -38,7 +38,7 @@ public class Router {
                                 // continue with delete
                             }
                         })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setIcon(android.R.drawable.ic_dialog_info)
                         .show();
             }
         }
