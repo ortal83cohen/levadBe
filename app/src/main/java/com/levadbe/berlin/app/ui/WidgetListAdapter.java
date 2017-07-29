@@ -35,7 +35,6 @@ import com.levadbe.berlin.app.helper.ItemTouchHelperAdapter;
 import com.levadbe.berlin.app.helper.ItemTouchHelperViewHolder;
 import com.levadbe.berlin.app.helper.OnStartDragListener;
 import com.levadbe.berlin.app.model.AddGroupWidgetWidget;
-import com.levadbe.berlin.app.model.ClockWidget;
 import com.levadbe.berlin.app.model.CurrencyConverterWidget;
 import com.levadbe.berlin.app.model.LinkWidget;
 import com.levadbe.berlin.app.model.NotificationWidget;
@@ -46,9 +45,10 @@ import com.levadbe.berlin.app.viewmodel.ManagerWidgetViewModel;
 import com.levadbe.berlin.app.viewmodel.WidgetViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.TimeZone;
 
 
 /**
@@ -61,7 +61,7 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         implements ItemTouchHelperAdapter {
     public static final int WIDGET_TYPE_FORM = 1;
     public static final int WIDGET_TYPE_WHETHER = 2;
-    public static final int WIDGET_TYPE_CLOCK = 3;
+
     public static final int WIDGET_TYPE_NOTIFICATION = 4;
     public static final int WIDGET_TYPE_ADD_GROUP_WIDGET = 5;
     public static final int WIDGET_TYPE_MAP = 6;
@@ -114,10 +114,7 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
                 linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
                 widgetItemViewHolder = new NotificationViewHolderWidget(container);
                 break;
-            case WIDGET_TYPE_CLOCK:
-                linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
-                widgetItemViewHolder = new ClockViewHolderWidget(container);
-                break;
+
             case WIDGET_TYPE_MAP:
                 linearContainer.inflate(mContext, R.layout.simple_item, linearContainer);
                 widgetItemViewHolder = new MapViewHolderWidget(container);
@@ -212,10 +209,10 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
     }
 
     public static class WeatherViewHolderWidget extends WidgetItemViewHolder {
-        private TextView cityText;
+
         private TextView condDescr;
         private TextView temp;
-        private TextView press;
+
         private TextView windSpeed;
         private TextView windDeg;
 
@@ -223,12 +220,10 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         private ImageView imgView;
 
         public WeatherViewHolderWidget(View itemView) {
-            super(itemView, true, true);
-            cityText = (TextView) itemView.findViewById(R.id.cityText);
+            super(itemView, false, false);
             condDescr = (TextView) itemView.findViewById(R.id.condDescr);
             temp = (TextView) itemView.findViewById(R.id.temp);
             hum = (TextView) itemView.findViewById(R.id.hum);
-            press = (TextView) itemView.findViewById(R.id.press);
             windSpeed = (TextView) itemView.findViewById(R.id.windSpeed);
             windDeg = (TextView) itemView.findViewById(R.id.windDeg);
             imgView = (ImageView) itemView.findViewById(R.id.condIcon);
@@ -240,16 +235,13 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
             if (weather.location != null) {
 
                 Picasso.with(context).load(weather.iconData).into(imgView);
-
-
-                cityText.setText(weather.location.getCity() + "," + weather.location.getCountry());
                 condDescr.setText(weather.currentCondition.getCondition() + "(" + weather.currentCondition.getDescr() + ")");
                 temp.setText("" + Math.round((weather.temperature.getTemp() - 273.15)) + "�C");
                 hum.setText("" + weather.currentCondition.getHumidity() + "%");
-                press.setText("" + weather.currentCondition.getPressure() + " hPa");
                 windSpeed.setText("" + weather.wind.getSpeed() + " mps");
                 windDeg.setText("" + weather.wind.getDeg() + "�");
             }
+
         }
 
         @Override
@@ -386,7 +378,7 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
 
         public void bind(Context context, final Widget widget, final OnWidgetClickListener onWidgetClickListener) {
             textView.setText(((LinkWidget)widget).text);
-            textView.setTextColor(context.getColor(R.color.tw__blue_pressed));
+            textView.setTextColor(context.getResources().getColor(R.color.tw__blue_pressed));
             item.setBackground(context.getDrawable(R.drawable.ripple_color_white));
             item.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -431,32 +423,6 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetItemViewHolder
         }
     }
 
-    public static class ClockViewHolderWidget extends WidgetItemViewHolder {
-
-
-        public final TextView textView;
-//        public final ImageView handleView;
-
-        public ClockViewHolderWidget(View itemView) {
-            super(itemView, false, false);
-            textView = (TextView) itemView.findViewById(R.id.text);
-//            handleView = (ImageView) itemView.findViewById(R.id.handle);
-        }
-
-        @Override
-        public void onItemSelected() {
-            //itemView.setBackgroundColor(Color.LTGRAY);
-        }
-
-        @Override
-        public void onItemClear() {
-            // itemView.setBackgroundColor(0);
-        }
-
-        public void bind(Context context, Widget widget, OnWidgetClickListener onWidgetClickListener) {
-            textView.setText(((ClockWidget) widget).text);
-        }
-    }
 
 
 }

@@ -12,7 +12,6 @@ import com.levadbe.berlin.app.client.FixerResponse;
 import com.levadbe.berlin.app.client.JSONWeatherParser;
 import com.levadbe.berlin.app.client.WeatherHttpClient;
 import com.levadbe.berlin.app.helper.Strings;
-import com.levadbe.berlin.app.model.ClockWidget;
 import com.levadbe.berlin.app.model.CurrencyConverterWidget;
 import com.levadbe.berlin.app.model.ForumWidget;
 import com.levadbe.berlin.app.model.LinkWidget;
@@ -33,7 +32,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -150,10 +148,9 @@ public class WidgetViewModel extends ViewModel {
     public LiveData<List<Widget>> getWidget() {
         if (widgets.getValue() == null) {
             List<Widget> mItems = new ArrayList<>();
-            mItems.add(new NotificationWidget("הידעת, חלק מההודעות ניתנות לשינוי מקום או מחיקה (נסה אותי)", UUID.randomUUID().toString()));
-            mItems.add(new ClockWidget(UUID.randomUUID().toString()));
-            mItems.add(new ForumWidget(UUID.randomUUID().toString()));
             mItems.add(new WeatherWidget(new Weather(), UUID.randomUUID().toString()));
+            mItems.add(new NotificationWidget("הידעת, חלק מההודעות ניתנות לשינוי מקום או מחיקה (נסה אותי)", UUID.randomUUID().toString()));
+            mItems.add(new ForumWidget(UUID.randomUUID().toString()));
             mItems.add(new MapWidget(UUID.randomUUID().toString()));
 //            mItems.addAll(dynamicWidgets);
             mItems.add(new NotificationWidget("הודעה אישית 1", UUID.randomUUID().toString()));
@@ -204,10 +201,10 @@ public class WidgetViewModel extends ViewModel {
             super.onPostExecute(weather);
 
             List<Widget> mItems = new ArrayList<>();
-            mItems.add(new NotificationWidget("הידעת, חלק מההודעות ניתנות לשינוי מקום או מחיקה (נסה אותי)", UUID.randomUUID().toString()));
-            mItems.add(new ClockWidget(UUID.randomUUID().toString()));
-            mItems.add(new ForumWidget(UUID.randomUUID().toString()));
             mItems.add(new WeatherWidget(weather, UUID.randomUUID().toString()));
+            mItems.add(new NotificationWidget("הידעת, חלק מההודעות ניתנות לשינוי מקום או מחיקה (נסה אותי)", UUID.randomUUID().toString()));
+
+            mItems.add(new ForumWidget(UUID.randomUUID().toString()));
             mItems.add(new MapWidget(UUID.randomUUID().toString()));
 //            mItems.addAll(dynamicWidgets);
             mItems.add(new NotificationWidget("הודעה אישית 1", UUID.randomUUID().toString()));

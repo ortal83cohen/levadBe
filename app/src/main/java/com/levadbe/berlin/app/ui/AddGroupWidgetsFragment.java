@@ -127,6 +127,7 @@ public class AddGroupWidgetsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 addWidgetViewModel.setGroupsSpinner(groupsItems[position]);
+                validateSubmit();
             }
 
             @Override
